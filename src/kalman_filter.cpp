@@ -68,7 +68,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   // Normailze the y(1) to -pi pi
   while(fabs((fabs(y(1))- M_PI) > 0.00001)){
     float signX = copysignf(1.0, y(1));
-    y(1) = 2*M_PI - signX*y(1);
+    y(1) = y(1) - signX*2*M_PI;
   }
 
   MatrixXd PHt = P_*(H_.transpose());
