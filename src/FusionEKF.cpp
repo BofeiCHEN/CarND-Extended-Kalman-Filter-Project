@@ -83,15 +83,14 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       float theta = measurement_pack.raw_measurements_[1];
       ekf_.x_(0) = ro*cos(theta);
       ekf_.x_(1) = -ro*sin(theta);
-      previous_timestamp_ = measurement_pack.timestamp_;
     }
     else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
       // TODO: Initialize state.
       ekf_.x_(0) = measurement_pack.raw_measurements_[0];
       ekf_.x_(1) = measurement_pack.raw_measurements_[1];
-      previous_timestamp_ = measurement_pack.timestamp_;
-    }             
-
+    }  
+               
+    previous_timestamp_ = measurement_pack.timestamp_;
     // done initializing, no need to predict or update
     is_initialized_ = true;
     return;
