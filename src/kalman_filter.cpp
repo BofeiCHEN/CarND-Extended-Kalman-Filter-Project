@@ -47,6 +47,10 @@ void KalmanFilter::Update(const VectorXd &z) {
   x_ = x_ + K*y;
   P_ = (I_ - K * H_) * P_;
 }
+/* Review:
+ Update() and UpdateEKF() have common code. You could refactor the last few lines into a common function to be called from Update() and UpdateEKF().
+*/
+
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
   /**
@@ -63,6 +67,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     hx << denominator, atan2(x_(1), x_(0)), numerator/denominator ;
   }
   
+/* Review:
+ Another way is to use the std:max() function: Here you leave the equation to take the decision on what to do with zaro.
+hx << denominator, atan2(x_(1), x_(0)), numerator/std::max(denominator, eps); // with eps is a small number. E.g.: .000001
+*/
   VectorXd y = z - hx;
 
   // Normailze the y(1) to -pi pi
@@ -70,7 +78,11 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     float signX = copysignf(1.0, y(1));
     y(1) = y(1) - signX*2*M_PI;
   }
+/* Review:
+Alternative way for normalization: There is a mathematical trick that you can use here: For an angle phi: Get the tan(-1)(tan(phi))
 
+  y(1) = atan2(sin(y(1)), cos(y(1)));
+*/
   MatrixXd PHt = P_*(H_.transpose());
   MatrixXd S = H_*PHt + R_;
   MatrixXd K = PHt*(S.inverse());
